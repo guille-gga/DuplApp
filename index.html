@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DuplApp - Premium Dark Edition</title>
+    <title>TravelGram - Premium Dark Edition</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -12,21 +12,21 @@
     <style>
         /* PALETA ULTRA OSCURA */
         * { 
-            margin: 0; 
+            margin: 0;
             padding: 0; 
             box-sizing: border-box; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
         
         body { 
-            background-color: #000000; 
+            background-color: #000000;
             color: #ffffff; 
             display: flex; 
             justify-content: center; 
         }
 
         .app-container {
-            width: 100%; 
+            width: 100%;
             max-width: 450px; 
             height: 100vh;
             display: flex; 
@@ -39,29 +39,33 @@
 
         /* SELECCIÓN DE PERFIL INICIAL */
         .login-screen { 
-            position: absolute; 
+            position: absolute;
             top: 0; left: 0; width: 100%; height: 100%; 
             background: #000000; 
             z-index: 200; 
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
-            align-items: center; 
+            align-items: center;
             padding: 20px; 
         }
         .login-title { 
-            font-size: 26px; 
+            font-size: 26px;
             font-weight: 800; 
             margin-bottom: 8px; 
             color: #ffffff;
             letter-spacing: -0.5px;
         }
-        .login-subtitle { color: #888888; margin-bottom: 40px; font-size: 14px; }
-        .profile-selector-container { display: flex; gap: 40px; }
-        .user-card { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; }
-        .user-card:hover { transform: scale(1.05); }
+        .login-subtitle { color: #888888;
+            margin-bottom: 40px; font-size: 14px; }
+        .profile-selector-container { display: flex; gap: 40px;
+        }
+        .user-card { display: flex; flex-direction: column; align-items: center; cursor: pointer;
+            transition: transform 0.2s; }
+        .user-card:hover { transform: scale(1.05);
+        }
         .user-avatar-circle { 
-            width: 90px; 
+            width: 90px;
             height: 90px; 
             border-radius: 50%; 
             background: #121212; 
@@ -70,16 +74,20 @@
             align-items: center; 
             justify-content: center; 
             margin-bottom: 12px; 
-            overflow: hidden; 
+            overflow: hidden;
         }
-        .user-avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
-        .user-card.wasabi .user-avatar-circle { border-color: #5c0f12; color: #ff4d52; }
-        .user-card.lilgga .user-avatar-circle { border-color: #0f2d5c; color: #4da6ff; }
-        .user-name { font-weight: 600; font-size: 16px; color: #ffffff; }
+        .user-avatar-circle img { width: 100%; height: 100%; object-fit: cover;
+        }
+        .user-card.wasabi .user-avatar-circle { border-color: #5c0f12; color: #ff4d52;
+        }
+        .user-card.lilgga .user-avatar-circle { border-color: #0f2d5c; color: #4da6ff;
+        }
+        .user-name { font-weight: 600; font-size: 16px; color: #ffffff;
+        }
 
         /* HEADER SUPERIOR */
         .top-header { 
-            height: 60px; 
+            height: 60px;
             border-bottom: 1px solid #1e1e1e; 
             display: flex; 
             align-items: center; 
@@ -87,31 +95,40 @@
             padding: 0 16px; 
             position: sticky; 
             top: 0; 
-            background-color: #000000; 
+            background-color: #000000;
             z-index: 10; 
         }
-        .logo { font-size: 22px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px; }
-        .current-user-tag { font-size: 11px; padding: 4px 12px; border-radius: 20px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;}
-        .tag-wasabi { background: #5c0f12; color: #ffffff; border: 1px solid #8c1a1e; }
-        .tag-lilgga { background: #0f2d5c; color: #ffffff; border: 1px solid #1a498c; }
+        .logo { font-size: 22px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px;
+        }
+        .current-user-tag { font-size: 11px; padding: 4px 12px; border-radius: 20px; font-weight: bold;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;}
+        .tag-wasabi { background: #5c0f12; color: #ffffff;
+            border: 1px solid #8c1a1e; }
+        .tag-lilgga { background: #0f2d5c; color: #ffffff;
+            border: 1px solid #1a498c; }
 
         /* CONTENIDO Y VISTAS */
-        .main-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; background-color: #000000;}
-        .view { display: none; animation: fadeIn 0.2s ease; flex: 1; }
-        .view.active { display: block; }
-        #chats-view.active { display: flex; flex-direction: column; }
+        .main-content { flex: 1;
+            overflow-y: auto; display: flex; flex-direction: column; background-color: #000000;}
+        .view { display: none;
+            animation: fadeIn 0.2s ease; flex: 1; }
+        .view.active { display: block;
+        }
+        #chats-view.active { display: flex; flex-direction: column;
+        }
 
         .feed-header-actions { 
-            display: flex; 
+            display: flex;
             align-items: center; 
             justify-content: space-between; 
             padding: 16px; 
             border-bottom: 1px solid #1e1e1e; 
-            background: #121212; 
+            background: #121212;
         }
-        .feed-header-actions span { font-weight: 600; font-size: 14px; color: #ffffff; }
+        .feed-header-actions span { font-weight: 600; font-size: 14px; color: #ffffff;
+        }
         .btn-feed-add { 
-            background: #ffffff; 
+            background: #ffffff;
             color: #000000; 
             border: none; 
             padding: 8px 16px; 
@@ -120,74 +137,132 @@
             display: flex; 
             align-items: center; 
             gap: 6px; 
-            cursor: pointer; 
+            cursor: pointer;
             font-size: 13px;
         }
 
         /* MARCADOR DE TROFEOS */
-        .counter-container { padding: 24px 16px; }
-        .scoreboard { background: #121212; border-radius: 16px; padding: 20px; border: 1px solid #1e1e1e; }
-        .score-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; }
-        .score-row:not(:last-child) { border-bottom: 1px solid #1e1e1e; }
-        .score-user { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 16px; color: #ffffff; }
-        .score-number { font-size: 32px; font-weight: 900; color: #ffffff; }
+        .counter-container { padding: 24px 16px;
+        }
+        .scoreboard { background: #121212; border-radius: 16px; padding: 20px; border: 1px solid #1e1e1e;
+        }
+        .score-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0;
+        }
+        .score-row:not(:last-child) { border-bottom: 1px solid #1e1e1e;
+        }
+        .score-user { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 16px;
+            color: #ffffff; }
+        .score-number { font-size: 32px; font-weight: 900; color: #ffffff;
+        }
 
         /* TARJETAS DE PUBLICACIÓN DEL FEED */
-        .post-card { background: #000000; margin-bottom: 24px; border-bottom: 1px solid #1e1e1e; }
-        .post-header { display: flex; align-items: center; padding: 14px; background-color: #121212; border-top: 1px solid #1e1e1e; border-bottom: 1px solid #1e1e1e;}
-        .post-user-badge { width: 36px; height: 36px; border-radius: 50%; margin-right: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; overflow: hidden; border: 1px solid #333333; }
-        .post-user-badge img { width: 100%; height: 100%; object-fit: cover; }
-        .badge-wasabi { background: #5c0f12; color: white; }
-        .badge-lilgga { background: #0f2d5c; color: white; }
-        .post-location { font-size: 12px; color: #888888; margin-top: 2px; }
-        .post-img { width: 100%; max-height: 420px; object-fit: cover; display: block; background-color: #121212; }
-        .post-actions { padding: 14px 14px 8px 14px; display: flex; align-items: center; gap: 8px; }
-        .view-icon { cursor: pointer; font-size: 24px; color: #666666; }
-        .view-icon.seen { color: #ffffff; }
-        .view-text { font-size: 13px; color: #888888; }
-        .post-info { padding: 0 14px 14px 14px; font-size: 14px; color: #ffffff; line-height: 1.4; }
-        .post-info strong { color: #ffffff; margin-right: 6px; }
+        .post-card { background: #000000;
+            margin-bottom: 24px; border-bottom: 1px solid #1e1e1e; }
+        .post-header { display: flex; align-items: center;
+            padding: 14px; background-color: #121212; border-top: 1px solid #1e1e1e; border-bottom: 1px solid #1e1e1e;}
+        .post-user-badge { width: 36px;
+            height: 36px; border-radius: 50%; margin-right: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; overflow: hidden;
+            border: 1px solid #333333; }
+        .post-user-badge img { width: 100%; height: 100%;
+            object-fit: cover; }
+        .badge-wasabi { background: #5c0f12; color: white;
+        }
+        .badge-lilgga { background: #0f2d5c; color: white;
+        }
+        .post-location { font-size: 12px; color: #888888; margin-top: 2px;
+        }
+        .post-img { width: 100%; max-height: 420px; object-fit: cover; display: block; background-color: #121212;
+        }
+        .post-actions { padding: 14px 14px 8px 14px; display: flex; align-items: center;
+            gap: 8px; }
+        .view-icon { cursor: pointer; font-size: 24px; color: #666666;
+        }
+        .view-icon.seen { color: #ffffff;
+        }
+        .view-text { font-size: 13px; color: #888888;
+        }
+        .post-info { padding: 0 14px 14px 14px; font-size: 14px; color: #ffffff;
+            line-height: 1.4; }
+        .post-info strong { color: #ffffff; margin-right: 6px;
+        }
 
         /* SECCIÓN DE COMENTARIOS */
-        .comments-section { border-top: 1px solid #1e1e1e; padding: 12px 14px; background: #121212; }
-        .comments-list { max-height: 120px; overflow-y: auto; margin-bottom: 10px; display: flex; flex-direction: column; gap: 6px; }
-        .comment-item { font-size: 13px; color: #ffffff; }
-        .comment-item .author-W { color: #ff4d52; font-weight: bold; margin-right: 6px;}
-        .comment-item .author-L { color: #4da6ff; font-weight: bold; margin-right: 6px;}
-        .comment-form { display: flex; gap: 8px; }
-        .comment-input { flex: 1; background: #000000; border: 1px solid #1e1e1e; color: #ffffff; padding: 8px 14px; border-radius: 20px; font-size: 13px; outline: none; }
-        .comment-input::placeholder { color: #555555; }
-        .btn-comment-send { background: none; border: none; color: #ffffff; font-weight: bold; cursor: pointer; padding: 0 4px; }
+        .comments-section { border-top: 1px solid #1e1e1e;
+            padding: 12px 14px; background: #121212; }
+        .comments-list { max-height: 120px; overflow-y: auto;
+            margin-bottom: 10px; display: flex; flex-direction: column; gap: 6px; }
+        .comment-item { font-size: 13px;
+            color: #ffffff; }
+        .comment-item .author-W { color: #ff4d52; font-weight: bold;
+            margin-right: 6px;}
+        .comment-item .author-L { color: #4da6ff; font-weight: bold;
+            margin-right: 6px;}
+        .comment-form { display: flex; gap: 8px;
+        }
+        .comment-input { flex: 1; background: #000000; border: 1px solid #1e1e1e; color: #ffffff;
+            padding: 8px 14px; border-radius: 20px; font-size: 13px; outline: none; }
+        .comment-input::placeholder { color: #555555;
+        }
+        .btn-comment-send { background: none; border: none; color: #ffffff; font-weight: bold; cursor: pointer;
+            padding: 0 4px; }
 
         /* PESTAÑA CHAT PRIVADO REQUERIDO */
-        .chat-header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: #121212; border-bottom: 1px solid #1e1e1e; }
-        .chat-header-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; color: white; font-weight: bold; overflow: hidden; border: 1px solid #333333;}
-        .chat-header-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .chat-header { display: flex;
+            align-items: center; gap: 12px; padding: 14px 16px; background: #121212; border-bottom: 1px solid #1e1e1e;
+        }
+        .chat-header-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; font-size: 14px; color: white; font-weight: bold; overflow: hidden;
+            border: 1px solid #333333;}
+        .chat-header-avatar img { width: 100%; height: 100%; object-fit: cover;
+        }
         
-        .messages-list { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; background-color: #000000; }
-        .msg-bubble { max-width: 78%; padding: 12px 16px; border-radius: 18px; font-size: 14px; word-wrap: break-word; line-height: 1.4; color: #ffffff; }
+        .messages-list { flex: 1;
+            padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; background-color: #000000;
+        }
+        .msg-bubble { max-width: 78%; padding: 12px 16px; border-radius: 18px; font-size: 14px;
+            word-wrap: break-word; line-height: 1.4; color: #ffffff; }
         
-        .msg-bubble.wasabi-bubble { background-color: #5c0f12; align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid #8c1a1e; }
-        .msg-bubble.lilgga-bubble { background-color: #0f2d5c; align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid #1a498c; }
-        .msg-bubble.my-bubble-right { align-self: flex-end; border-bottom-right-radius: 4px; background-color: #222222; }
+        .msg-bubble.wasabi-bubble { background-color: #5c0f12;
+            align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid #8c1a1e; }
+        .msg-bubble.lilgga-bubble { background-color: #0f2d5c;
+            align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid #1a498c; }
+        .msg-bubble.my-bubble-right { align-self: flex-end;
+            border-bottom-right-radius: 4px; background-color: #222222; }
 
-        .chat-input-container { display: flex; padding: 14px; gap: 10px; border-top: 1px solid #1e1e1e; background: #121212; }
-        .chat-input-container input { flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid #1e1e1e; background: #000000; color: #ffffff; outline: none; font-size: 14px; }
-        .chat-input-container input::placeholder { color: #555555; }
-        .chat-input-container button { background: #ffffff; border: none; color: #000000; padding: 0 20px; border-radius: 24px; cursor: pointer; font-weight: bold; font-size: 14px; }
+        .chat-input-container { display: flex; padding: 14px; gap: 10px;
+            border-top: 1px solid #1e1e1e; background: #121212; }
+        .chat-input-container input { flex: 1;
+            padding: 12px 16px; border-radius: 24px; border: 1px solid #1e1e1e; background: #000000; color: #ffffff; outline: none; font-size: 14px;
+        }
+        .chat-input-container input::placeholder { color: #555555;
+        }
+        .chat-input-container button { background: #ffffff; border: none; color: #000000; padding: 0 20px;
+            border-radius: 24px; cursor: pointer; font-weight: bold; font-size: 14px; }
 
         /* APARTADO PERFIL */
-        .profile-view-wrapper { display: flex; flex-direction: column; height: 100%; justify-content: space-between; background-color: #000000; }
-        .profile-container { padding: 20px 16px; flex: 1; overflow-y: auto; }
-        .profile-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-        .profile-identity { display: flex; align-items: center; }
-        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 20px; color: white; overflow: hidden; background: #121212; border: 1px solid #1e1e1e; }
-        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .stat-item { text-align: center; font-size: 13px; color: #888888; }
-        .stat-number { font-weight: bold; font-size: 20px; color: #ffffff; display: block; margin-bottom: 2px; }
-        .btn-edit-profile { background: none; border: none; color: #888888; cursor: pointer; padding: 8px; }
-        .btn-edit-profile:hover { color: #ffffff; }
-        .profile-bio h2 { font-size: 22px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px; }
+        .profile-view-wrapper { display: flex;
+            flex-direction: column; height: 100%; justify-content: space-between; background-color: #000000; }
+        .profile-container { padding: 20px 16px;
+            flex: 1; overflow-y: auto; }
+        .profile-header { display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 24px; }
+        .profile-identity { display: flex; align-items: center;
+        }
+        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; margin-right: 20px; color: white; overflow: hidden; background: #121212; border: 1px solid #1e1e1e;
+        }
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover;
+        }
+        .stat-item { text-align: center; font-size: 13px; color: #888888;
+        }
+        .stat-number { font-weight: bold; font-size: 20px; color: #ffffff; display: block; margin-bottom: 2px;
+        }
+        .btn-edit-profile { background: none; border: none; color: #888888; cursor: pointer; padding: 8px;
+        }
+        .btn-edit-profile:hover { color: #ffffff;
+        }
+        .profile-bio h2 { font-size: 22px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px;
+        }
         
         /* TAG DE CIUDAD UBICACIÓN */
         .city-tag {
@@ -206,39 +281,72 @@
             letter-spacing: 0.3px;
         }
 
-        .profile-bio p { font-size: 14px; color: #888888; margin-top: 10px; line-height: 1.4; }
+        .profile-bio p { font-size: 14px;
+            color: #888888; margin-top: 10px; line-height: 1.4; }
         
-        .travel-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 20px; }
-        .grid-item { aspect-ratio: 1; background: #121212; object-fit: cover; width: 100%; border-radius: 2px; border: 1px solid #1e1e1e; }
+        .travel-grid { display: grid;
+            grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 20px; }
+        .grid-item { aspect-ratio: 1;
+            background: #121212; object-fit: cover; width: 100%; border-radius: 2px; border: 1px solid #1e1e1e;
+        }
         
-        .switch-friend-profile-bar { padding: 14px 16px; background: #121212; border-top: 1px solid #1e1e1e; display: flex; justify-content: center; }
-        .btn-switch-friend { width: 100%; background: #000000; color: #ffffff; border: 1px solid #1e1e1e; padding: 12px; border-radius: 10px; font-weight: 600; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: background 0.2s; }
-        .btn-switch-friend:hover { background: #121212; }
+        .switch-friend-profile-bar { padding: 14px 16px;
+            background: #121212; border-top: 1px solid #1e1e1e; display: flex; justify-content: center;
+        }
+        .btn-switch-friend { width: 100%; background: #000000; color: #ffffff; border: 1px solid #1e1e1e;
+            padding: 12px; border-radius: 10px; font-weight: 600; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+            transition: background 0.2s; }
+        .btn-switch-friend:hover { background: #121212;
+        }
 
         /* MODALES Y SELECTORES */
-        .modal { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; justify-content: center; align-items: center; padding: 16px; }
-        .modal-content { background: #121212; padding: 24px; border-radius: 16px; width: 100%; border: 1px solid #1e1e1e; display: flex; flex-direction: column; gap: 16px; }
-        .modal-content h3 { font-size: 18px; font-weight: 700; color: #ffffff; margin-bottom: 4px; }
-        .modal-content input[type="text"], .modal-content textarea, .modal-content select { padding: 12px; background: #000000; border: 1px solid #1e1e1e; color: #ffffff; border-radius: 8px; outline: none; font-size: 14px; width: 100%; }
-        .modal-content input::placeholder, .modal-content textarea::placeholder { color: #555555; }
-        .modal-content select option { background: #121212; color: #ffffff; }
+        .modal { display: none;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; justify-content: center; align-items: center; padding: 16px;
+        }
+        .modal-content { background: #121212; padding: 24px; border-radius: 16px; width: 100%;
+            border: 1px solid #1e1e1e; display: flex; flex-direction: column; gap: 16px;
+        }
+        .modal-content h3 { font-size: 18px; font-weight: 700; color: #ffffff; margin-bottom: 4px;
+        }
+        .modal-content input[type="text"], .modal-content textarea, .modal-content select { padding: 12px; background: #000000;
+            border: 1px solid #1e1e1e; color: #ffffff; border-radius: 8px; outline: none; font-size: 14px; width: 100%;
+        }
+        .modal-content input::placeholder, .modal-content textarea::placeholder { color: #555555;
+        }
+        .modal-content select option { background: #121212; color: #ffffff;
+        }
         
-        .file-input-wrapper { position: relative; background: #000000; border: 1px dashed #333333; padding: 24px; border-radius: 8px; text-align: center; cursor: pointer; }
-        .file-input-wrapper input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-        .modal-buttons { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
-        .btn { padding: 10px 20px; border-radius: 24px; border: none; cursor: pointer; font-weight: bold; font-size: 13px; }
-        .btn-primary { background: #ffffff; color: #000000; }
-        .btn-secondary { background: #1e1e1e; color: #ffffff; border: 1px solid #333333; }
+        .file-input-wrapper { position: relative;
+            background: #000000; border: 1px dashed #333333; padding: 24px; border-radius: 8px; text-align: center; cursor: pointer;
+        }
+        .file-input-wrapper input[type="file"] { position: absolute; top: 0; left: 0; width: 100%;
+            height: 100%; opacity: 0; cursor: pointer; }
+        .modal-buttons { display: flex; justify-content: flex-end;
+            gap: 10px; margin-top: 8px; }
+        .btn { padding: 10px 20px; border-radius: 24px;
+            border: none; cursor: pointer; font-weight: bold; font-size: 13px; }
+        .btn-primary { background: #ffffff;
+            color: #000000; }
+        .btn-secondary { background: #1e1e1e; color: #ffffff; border: 1px solid #333333;
+        }
 
         /* NAV INFERIOR */
-        .bottom-nav { height: 60px; border-top: 1px solid #1e1e1e; display: flex; justify-content: space-around; align-items: center; background-color: #000000; }
-        .nav-item { background: none; border: none; color: #555555; cursor: pointer; display: flex; flex-direction: column; align-items: center; padding: 10px; transition: color 0.2s; }
-        .nav-item.active { color: #ffffff; }
-        .nav-item .material-icons { font-size: 26px; }
+        .bottom-nav { height: 60px;
+            border-top: 1px solid #1e1e1e; display: flex; justify-content: space-around; align-items: center; background-color: #000000;
+        }
+        .nav-item { background: none; border: none; color: #555555; cursor: pointer; display: flex;
+            flex-direction: column; align-items: center; padding: 10px; transition: color 0.2s; }
+        .nav-item.active { color: #ffffff;
+        }
+        .nav-item .material-icons { font-size: 26px;
+        }
 
-        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 20px; color: #666666; width:100%; }
-        .empty-state .material-icons { font-size: 40px; color: #222222; margin-bottom: 12px;}
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+            padding: 40px 20px; color: #666666; width:100%; }
+        .empty-state .material-icons { font-size: 40px;
+            color: #222222; margin-bottom: 12px;}
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px);
+        } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -246,11 +354,11 @@
     <div class="app-container">
         
         <div class="login-screen" id="login-screen">
-            <h1 class="login-title">DuplApp</h1>
+            <h1 class="login-title">TravelGram</h1>
             <p class="login-subtitle">Selecciona tu perfil de acceso</p>
             <div class="profile-selector-container">
                 <div class="user-card wasabi" onclick="selectUser('Wasabi')">
-                    <div class="user-avatar-circle" id="login-avatar-wasabi"><span class="material-icons" style="font-size: 40px; color:#ff4d52">local_fire_department</span></div>
+                     <div class="user-avatar-circle" id="login-avatar-wasabi"><span class="material-icons" style="font-size: 40px; color:#ff4d52">local_fire_department</span></div>
                     <span class="user-name">Wasabi</span>
                 </div>
                 <div class="user-card lilgga" onclick="selectUser('LiLGGA')">
@@ -261,9 +369,9 @@
         </div>
 
         <header class="top-header">
-            <div class="logo">DuplApp</div>
+            <div class="logo">TravelGram</div>
             <div id="user-tag" class="current-user-tag" onclick="logout()">Cargando...</div>
-        </header>
+         </header>
 
         <main class="main-content">
             <section id="feed-view" class="view active">
@@ -277,27 +385,30 @@
             </section>
 
             <section id="counter-view" class="view">
-                <div class="counter-container">
+                 <div class="counter-container">
                     <div class="scoreboard">
-                        <h3 style="margin-bottom: 20px; text-align: center; color: #888888; font-size:14px; text-transform:uppercase; letter-spacing:0.5px;">🏆 Petas Publicados</h3>
+                        <h3 style="margin-bottom: 20px;
+                            text-align: center; color: #888888; font-size:14px; text-transform:uppercase; letter-spacing:0.5px;">🏆 Viajes Publicados</h3>
                         <div class="score-row">
                             <span class="score-user"><span class="material-icons" style="color:#ff4d52;">local_fire_department</span> Wasabi</span>
                             <span class="score-number" id="score-wasabi">0</span>
-                        </div>
+                         </div>
                         <div class="score-row">
                             <span class="score-user"><span class="material-icons" style="color:#4da6ff;">bolt</span> LiLGGA</span>
-                            <span class="score-number" id="score-lilgga">0</span>
+                             <span class="score-number" id="score-lilgga">0</span>
                         </div>
                     </div>
                 </div>
             </section>
 
             <section id="chats-view" class="view">
-                <div class="chat-header">
+                 <div class="chat-header">
                     <div class="chat-header-avatar" id="chat-partner-avatar">?</div>
                     <div>
-                        <div style="font-weight: bold; font-size: 14px; color:#ffffff;" id="chat-partner-name">Conversación</div>
-                        <div style="font-size: 11px; color: #888888; margin-top:2px;">Sincronizado via Cloud</div>
+                        <div style="font-weight: bold;
+                            font-size: 14px; color:#ffffff;" id="chat-partner-name">Conversación</div>
+                        <div style="font-size: 11px;
+                            color: #888888; margin-top:2px;">Sincronizado via Cloud</div>
                     </div>
                 </div>
                 <div class="messages-list" id="messages-container"></div>
@@ -309,51 +420,55 @@
 
             <section id="profile-view" class="view">
                 <div class="profile-view-wrapper">
-                    <div class="profile-container">
+                     <div class="profile-container">
                         <div class="profile-header">
                             <div class="profile-identity">
                                 <div class="profile-avatar" id="profile-avatar-bg"></div>
-                                <div class="profile-stats">
+                                 <div class="profile-stats">
                                     <div class="stat-item"><span class="stat-number" id="post-count">0</span>publicaciones</div>
                                 </div>
-                            </div>
+                             </div>
                             <button class="btn-edit-profile" onclick="openEditProfileModal()">
                                 <span class="material-icons">settings</span>
-                            </button>
+                             </button>
                         </div>
                         <div class="profile-bio">
                             <h2 id="profile-name">Cargando...</h2>
-                            <div id="profile-city-tag" class="city-tag" style="display:none;">
+                             <div id="profile-city-tag" class="city-tag" style="display:none;">
                                 <span class="material-icons" style="font-size:12px;">place</span>
                                 <span id="profile-city-name">Destino</span>
-                            </div>
+                             </div>
                             <p id="profile-bio-text">Biografía de viaje...</p>
                         </div>
-                        <hr style="border:0; border-top: 1px solid #1e1e1e; margin: 24px 0;">
+                        <hr style="border:0;
+                            border-top: 1px solid #1e1e1e; margin: 24px 0;">
                         <div class="travel-grid" id="profile-grid"></div>
                     </div>
 
                     <div class="switch-friend-profile-bar">
-                        <button class="btn-switch-friend" id="btn-friend-action" onclick="toggleViewedProfile()">
+                        <button class="btn-switch-friend" id="btn-friend-action" 
+                            onclick="toggleViewedProfile()">
                             <span class="material-icons" style="font-size:16px;">people</span> Ver perfil amigo
                         </button>
                     </div>
                 </div>
-            </section>
+             </section>
         </main>
 
         <div class="modal" id="upload-modal">
             <div class="modal-content">
-                <h3>Subir foto al petario</h3>
-                <input type="text" id="post-location" placeholder="Añadir Título">
+                <h3>Subir foto al diario</h3>
+                <input type="text" id="post-location" placeholder="¿Dónde fuiste?">
                 <div class="file-input-wrapper">
-                    <span class="material-icons" style="color: #ffffff; font-size:28px;">cloud_upload</span>
-                    <p id="file-status" style="font-size:12px; margin-top:6px; color:#666666;">Selecciona una foto</p>
+                     <span class="material-icons" style="color: #ffffff;
+                        font-size:28px;">cloud_upload</span>
+                    <p id="file-status" style="font-size:12px;
+                        margin-top:6px; color:#666666;">Selecciona una foto</p>
                     <input type="file" id="post-file" accept="image/*" onchange="updateFileStatus('post-file', 'file-status')">
                 </div>
                 <textarea id="post-caption" rows="3" placeholder="Descripción..."></textarea>
                 <div class="modal-buttons">
-                    <button class="btn btn-secondary" onclick="closeModal('upload-modal')">Cancelar</button>
+                     <button class="btn btn-secondary" onclick="closeModal('upload-modal')">Cancelar</button>
                     <button class="btn btn-primary" onclick="savePostFirebase()">Publicar</button>
                 </div>
             </div>
@@ -361,33 +476,38 @@
 
         <div class="modal" id="edit-profile-modal">
             <div class="modal-content">
-                <h3>Editar Perfil</h3>
+                 <h3>Editar Perfil</h3>
                 <input type="text" id="edit-display-name" placeholder="Tu nombre público">
                 
-                <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label for="edit-city" style="font-size: 12px; color: #888888; font-weight: 600;">📍 Bajo posesión de:</label>
+                <div style="display: flex;
+                    flex-direction: column; gap: 6px;">
+                    <label for="edit-city" style="font-size: 12px;
+                        color: #888888; font-weight: 600;">📍 Próximo Destino / Ciudad Actual:</label>
                     <select id="edit-city">
                         <option value="">Ninguna seleccionada</option>
-                        <option value="Madrid">Gelato</option>
-                        <option value="Barcelona">Haze</option>
-                        <option value="París">Dry</option>
-                        <option value="Londres">CBD</option>
-                        <option value="Nueva York">StrawBerry</option>
-                        <option value="Tokio">Ni Zorra</option>
-                        <option value="Ámsterdam">Polen</option>
-                        <option value="Berlín">Ni Zorra</option>
-                        <option value="Ibiza">Vacío</option>
+                        <option value="Madrid">Madrid</option>
+                         <option value="Barcelona">Barcelona</option>
+                        <option value="París">París</option>
+                        <option value="Londres">Londres</option>
+                        <option value="Nueva York">Nueva York</option>
+                         <option value="Tokio">Tokio</option>
+                        <option value="Roma">Roma</option>
+                        <option value="Ámsterdam">Ámsterdam</option>
+                        <option value="Berlín">Berlín</option>
+                         <option value="Ibiza">Ibiza</option>
                     </select>
                 </div>
 
                 <div class="file-input-wrapper">
-                    <span class="material-icons" style="color: #ffffff; font-size:28px;">face</span>
-                    <p id="avatar-status" style="font-size:12px; margin-top:6px; color:#666666;">Cambiar foto de perfil</p>
+                    <span class="material-icons" style="color: #ffffff;
+                        font-size:28px;">face</span>
+                    <p id="avatar-status" style="font-size:12px;
+                        margin-top:6px; color:#666666;">Cambiar foto de perfil</p>
                     <input type="file" id="edit-avatar-file" accept="image/*" onchange="updateFileStatus('edit-avatar-file', 'avatar-status')">
                 </div>
                 <textarea id="edit-bio" rows="3" placeholder="Tu estado o descripción de viajero..."></textarea>
                 <div class="modal-buttons">
-                    <button class="btn btn-secondary" onclick="closeModal('edit-profile-modal')">Cancelar</button>
+                     <button class="btn btn-secondary" onclick="closeModal('edit-profile-modal')">Cancelar</button>
                     <button class="btn btn-primary" onclick="saveProfileChanges()">Guardar Cambios</button>
                 </div>
             </div>
@@ -411,7 +531,6 @@
             appId: "1:479201717699:web:3fc1cbcadfdd8c96d1a176",
             measurementId: "G-Z7CHBV6D23"
         };
-        
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
@@ -454,8 +573,10 @@
             checkLogin();
         }
 
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function openModal(id) { document.getElementById(id).style.display = 'flex';
+        }
+        function closeModal(id) { document.getElementById(id).style.display = 'none';
+        }
         function updateFileStatus(inputId, statusId) {
             const file = document.getElementById(inputId).files[0];
             if(file) document.getElementById(statusId).innerText = file.name;
@@ -466,19 +587,19 @@
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
-                reader.onload = (event) => {
+                 reader.onload = (event) => {
                     const img = new Image();
                     img.src = event.target.result;
                     img.onload = () => {
-                        const canvas = document.createElement('canvas');
+                         const canvas = document.createElement('canvas');
                         let width = img.width;
                         let height = img.height;
 
                         if (width > height) {
-                            if (width > maxWidth) { height *= maxWidth / width; width = maxWidth; }
+                             if (width > maxWidth) { height *= maxWidth / width; width = maxWidth; }
                         } else {
                             if (height > maxHeight) { width *= maxHeight / height; height = maxHeight; }
-                        }
+                         }
 
                         canvas.width = width;
                         canvas.height = height;
@@ -500,27 +621,24 @@
                 snapshot.forEach(doc => { usersDataCache[doc.id] = doc.data(); });
                 updateAvatarsInUI();
                 renderProfileData();
-            });
+             });
         }
 
         function listenPosts() {
-            db.collection("posts").onSnapshot((snapshot) => {
+            // Escuchamos ordenados por createdAt descendente (reciente a antiguo)
+            db.collection("posts").orderBy("createdAt", "desc").onSnapshot((snapshot) => {
                 globalPosts = [];
                 snapshot.forEach(doc => {
                     let post = doc.data();
                     post.id = doc.id;
                     globalPosts.push(post);
                 });
-                
-                globalPosts.sort((a, b) => {
-                    let timeA = a.createdAt ? a.createdAt.toMillis() : Date.now();
-                    let timeB = b.createdAt ? b.createdAt.toMillis() : Date.now();
-                    return timeB - timeA;
-                });
 
                 renderFeed(globalPosts);
                 calculateScores(globalPosts);
                 renderProfileData();
+            }, (error) => {
+                console.error("Error al escuchar posts: ", error);
             });
         }
 
@@ -529,12 +647,12 @@
                 let msgs = [];
                 snapshot.forEach(doc => msgs.push(doc.data()));
                 msgs.sort((a, b) => {
-                    let timeA = a.createdAt ? a.createdAt.toMillis() : Date.now();
+                     let timeA = a.createdAt ? a.createdAt.toMillis() : Date.now();
                     let timeB = b.createdAt ? b.createdAt.toMillis() : Date.now();
                     return timeA - timeB;
                 });
                 renderChats(msgs);
-            });
+             });
         }
 
         function updateAvatarsInUI() {
@@ -542,7 +660,7 @@
                 const key = u === 'wasabi' ? 'Wasabi' : 'LiLGGA';
                 if(usersDataCache[key] && usersDataCache[key].avatarUrl) {
                     document.getElementById(`login-avatar-${u}`).innerHTML = `<img src="${usersDataCache[key].avatarUrl}">`;
-                }
+                 }
             });
         }
 
@@ -556,15 +674,16 @@
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
             button.classList.add('active');
-            if(viewId === 'profile-view') { selectedProfileView = currentUser; renderProfileData(); }
-            if(viewId === 'chats-view') { setupChatInterface(); }
+            if(viewId === 'profile-view') { selectedProfileView = currentUser; renderProfileData();
+            }
+            if(viewId === 'chats-view') { setupChatInterface();
+            }
         }
 
         function setupChatInterface() {
             const partnerName = currentUser === 'Wasabi' ? 'LiLGGA' : 'Wasabi';
             document.getElementById('chat-partner-name').innerText = partnerName;
             const avatarContainer = document.getElementById('chat-partner-avatar');
-            
             if(usersDataCache[partnerName] && usersDataCache[partnerName].avatarUrl) {
                 avatarContainer.innerHTML = `<img src="${usersDataCache[partnerName].avatarUrl}">`;
             } else {
@@ -580,10 +699,8 @@
             const file = document.getElementById('post-file').files[0];
 
             if (!location || !file) return alert("Completa el destino y añade la foto.");
-
             try {
                 const optimizedImageBase64 = await compressAndResizeImage(file, 750, 750, 0.65);
-
                 await db.collection("posts").add({
                     author: currentUser,
                     location: location,
@@ -593,7 +710,6 @@
                     comments: [],
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-
                 closeModal('upload-modal');
                 document.getElementById('post-location').value = '';
                 document.getElementById('post-caption').value = '';
@@ -606,6 +722,10 @@
 
         function renderFeed(posts) {
             const container = document.getElementById('feed-container');
+            
+            // Forzamos la limpieza del contenedor antes de inyectar el nuevo estado (Evita duplicidades e hilos perdidos)
+            container.innerHTML = "";
+
             if (posts.length === 0) {
                 container.innerHTML = `<div class="empty-state"><span class="material-icons">photo_library</span><h3>No hay publicaciones</h3></div>`;
                 return;
@@ -622,20 +742,20 @@
 
                 return `
                     <div class="post-card">
-                        <div class="post-header">
+                         <div class="post-header">
                             <div class="post-user-badge ${badgeColorClass}">${avatarHTML}</div>
                             <div>
-                                <div style="font-weight:bold; font-size:14px; color:#ffffff;">${userData?.name || post.author}</div>
+                                 <div style="font-weight:bold; font-size:14px; color:#ffffff;">${userData?.name || post.author}</div>
                                 <div class="post-location">${post.location}</div>
                             </div>
                         </div>
-                        <img src="${post.imgUrl}" class="post-img">
+                         <img src="${post.imgUrl}" class="post-img">
                         <div class="post-actions">
                             <span class="material-icons ${post.seen ? 'view-icon seen' : 'view-icon'}" onclick="toggleSeen('${post.id}', ${post.seen})">visibility</span>
                             <span class="view-text">${post.seen ? 'Visto' : 'Marcar visto'}</span>
                         </div>
                         <div class="post-info"><p><strong>${userData?.name || post.author}:</strong>${post.caption}</p></div>
-                        <div class="comments-section">
+                         <div class="comments-section">
                             <div class="comments-list">${commentsHTML || '<span style="color:#555555; font-size:12px;">Sin comentarios</span>'}</div>
                             <div class="comment-form">
                                 <input type="text" class="comment-input" id="input-comment-${post.id}" placeholder="Comentar...">
@@ -656,7 +776,7 @@
             const text = input.value.trim();
             if(!text) return;
 
-            await db.collection("posts").doc(id).update({
+             await db.collection("posts").doc(id).update({
                 comments: firebase.firestore.FieldValue.arrayUnion({ user: currentUser, text: text })
             });
             input.value = '';
@@ -687,17 +807,17 @@
                 const isMe = msg.sender === currentUser;
                 let bubbleClass = msg.sender === 'Wasabi' ? 'wasabi-bubble' : 'lilgga-bubble';
                 let alignStyle = isMe ? 'my-bubble-right' : '';
-                return `<div class="msg-bubble ${bubbleClass} ${alignStyle}">${msg.text}</div>`;
+                 return `<div class="msg-bubble ${bubbleClass} ${alignStyle}">${msg.text}</div>`;
             }).join('');
             container.scrollTop = container.scrollHeight;
         }
 
-        // MODAL CONFIGURACIÓN PERFIL (INCLUYE CARGA DEL SELECTOR DE CIUDAD)
+        // MODAL CONFIGURACIÓN PERFIL
         function openEditProfileModal() {
             const myData = usersDataCache[currentUser];
             document.getElementById('edit-display-name').value = myData?.name || currentUser;
             document.getElementById('edit-bio').value = myData?.bio || '';
-            document.getElementById('edit-city').value = myData?.city || ''; // Carga ciudad de Firebase
+            document.getElementById('edit-city').value = myData?.city || '';
             document.getElementById('avatar-status').innerText = "Cambiar foto de perfil";
             openModal('edit-profile-modal');
         }
@@ -705,7 +825,7 @@
         async function saveProfileChanges() {
             const newName = document.getElementById('edit-display-name').value.trim();
             const newBio = document.getElementById('edit-bio').value.trim();
-            const newCity = document.getElementById('edit-city').value; // Toma valor de ciudad
+            const newCity = document.getElementById('edit-city').value;
 
             let finalAvatarUrl = usersDataCache[currentUser]?.avatarUrl || "";
             const file = document.getElementById('edit-avatar-file').files[0];
@@ -718,10 +838,9 @@
                 await db.collection("users").doc(currentUser).set({
                     name: newName || currentUser,
                     bio: newBio,
-                    city: newCity, // Guarda la ciudad en Firestore
+                    city: newCity,
                     avatarUrl: finalAvatarUrl
                 }, { merge: true });
-
                 closeModal('edit-profile-modal');
                 document.getElementById('edit-avatar-file').value = '';
             } catch (err) {
@@ -729,7 +848,7 @@
             }
         }
 
-        // RENDER DE PERFIL Y CONTADORES + VISUALIZACIÓN DEL TAG DE CIUDAD
+        // RENDER DE PERFIL Y CONTADORES
         function renderProfileData() {
             if(!currentUser) return;
             const targetData = usersDataCache[selectedProfileView];
@@ -737,7 +856,6 @@
             document.getElementById('profile-name').innerText = targetData?.name || selectedProfileView;
             document.getElementById('profile-bio-text').innerText = targetData?.bio || "Sin descripción de viaje aún.";
             
-            // Render del Tag de la ciudad elegida en el Perfil
             const cityTag = document.getElementById('profile-city-tag');
             if (targetData && targetData.city) {
                 document.getElementById('profile-city-name').innerText = targetData.city;
