@@ -92,6 +92,8 @@
         }
         .user-card.lilgga .user-avatar-circle { border-color: #0f2d5c; color: #4da6ff;
         }
+        .user-card.laflaca .user-avatar-circle { border-color: #5c5c0f; color: #ffff80;
+        }
         .user-name { font-weight: 600; font-size: 16px; color: #ffffff;
         }
 
@@ -116,6 +118,8 @@
             border: 1px solid #8c1a1e; }
         .tag-lilgga { background: #0f2d5c; color: #ffffff;
             border: 1px solid #1a498c; }
+        .tag-laflaca { background: #5c5c0f; color: #ffffff;
+            border: 1px solid #8c8c1a; }
 
         /* CONTENIDO Y VISTAS */
         .main-content { flex: 1;
@@ -179,6 +183,8 @@
         }
         .badge-lilgga { background: #0f2d5c; color: white;
         }
+        .badge-laflaca { background: #5c5c0f; color: white;
+        }
         .post-location { font-size: 12px; color: #888888; margin-top: 2px;
         }
         .spot-tag { display:inline-block; margin-left:6px; padding:2px 8px; background:#ffffff; color:#000000; border-radius: 999px; font-size:11px; font-weight:700; vertical-align:middle; }
@@ -237,6 +243,8 @@
             align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid #8c1a1e; }
         .msg-bubble.lilgga-bubble { background-color: #0f2d5c;
             align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid #1a498c; }
+        .msg-bubble.laflaca-bubble { background-color: #5c5c0f;
+            align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid #8c8c1a; }
         .msg-bubble.my-bubble-right { align-self: flex-end;
             border-bottom-right-radius: 4px; background-color: #222222; }
 
@@ -384,6 +392,10 @@
                     <div class="user-avatar-circle" id="login-avatar-lilgga"><span class="material-icons" style="font-size: 40px; color:#4da6ff">bolt</span></div>
                     <span class="user-name">LiLGGA</span>
                 </div>
+                <div class="user-card laflaca" onclick="selectUser('La Flaca')">
+                    <div class="user-avatar-circle" id="login-avatar-laflaca"><span class="material-icons" style="font-size: 40px; color:#ffff80">star</span></div>
+                    <span class="user-name">La Flaca</span>
+                </div>
             </div>
         </div>
 
@@ -492,10 +504,7 @@
                     </div>
 
                     <div class="switch-friend-profile-bar">
-                        <button class="btn-switch-friend" id="btn-friend-action" 
-                            onclick="toggleViewedProfile()">
-                            <span class="material-icons" style="font-size:16px;">people</span> Ver perfil amigo
-                        </button>
+                        <div id="btn-friend-actions" style="display:flex;gap:8px;width:100%;"></div>
                     </div>
                 </div>
              </section>
@@ -583,8 +592,9 @@
 
         let currentUser = localStorage.getItem('fb_current_user') || null;
         let selectedProfileView = null;
-        let usersDataCache = { Wasabi: null, LiLGGA: null };
+        let usersDataCache = { Wasabi: null, LiLGGA: null, 'La Flaca': null };
         let globalPosts = [];
+        let globalPlaces = [];
         let notifications = [];
         let notifiedPostIds = [];
         let notifiedMessageIds = [];
@@ -597,6 +607,7 @@
             notifiedMessageIds = loadNotifiedIds('message');
             listenUsers();
             listenPosts();
+            listenPlaces();
             listenMessages();
             checkLogin();
             renderPlacesList();
@@ -676,7 +687,10 @@
             } else {
                 loginScreen.style.display = 'none';
                 userTag.innerText = currentUser;
-                userTag.className = `current-user-tag ${currentUser === 'Wasabi' ? 'tag-wasabi' : 'tag-lilgga'}`;
+                let tagClass = 'tag-lilgga';
+                if (currentUser === 'Wasabi') tagClass = 'tag-wasabi';
+                else if (currentUser === 'La Flaca') tagClass = 'tag-laflaca';
+                userTag.className = `current-user-tag ${tagClass}`;
                 if(!selectedProfileView) selectedProfileView = currentUser;
                 renderProfileData();
             }
@@ -746,6 +760,20 @@
              });
         }
 
+        
+        function listenPlaces() {
+            db.collection("places").orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+                globalPlaces = [];
+                snapshot.forEach(doc => {
+                    globalPlaces.push({ id: doc.id, ...doc.data() });
+                });
+                renderPlacesList();
+                renderProfilePlaces();
+                renderFeed(globalPosts);
+            });
+        }
+
+
         function listenPosts() {
             // Escuchamos ordenados por createdAt descendente (reciente a antiguo)
             db.collection("posts").orderBy("createdAt", "desc").onSnapshot((snapshot) => {
@@ -810,8 +838,11 @@
         }
 
         function updateAvatarsInUI() {
-            ['wasabi', 'lilgga'].forEach(u => {
-                const key = u === 'wasabi' ? 'Wasabi' : 'LiLGGA';
+            ['wasabi', 'lilgga', 'laflaca'].forEach(u => {
+                let key;
+                if (u === 'wasabi') key = 'Wasabi';
+                else if (u === 'lilgga') key = 'LiLGGA';
+                else key = 'La Flaca';
                 if(usersDataCache[key] && usersDataCache[key].avatarUrl) {
                     document.getElementById(`login-avatar-${u}`).innerHTML = `<img src="${usersDataCache[key].avatarUrl}">`;
                  }
@@ -835,7 +866,9 @@
         }
 
         function setupChatInterface() {
-            const partnerName = currentUser === 'Wasabi' ? 'LiLGGA' : 'Wasabi';
+            const users = ['Wasabi', 'LiLGGA', 'La Flaca'];
+            const currentIndex = users.indexOf(currentUser);
+            const partnerName = users[(currentIndex + 1) % users.length];
             document.getElementById('chat-partner-name').innerText = partnerName;
             const avatarContainer = document.getElementById('chat-partner-avatar');
             if(usersDataCache[partnerName] && usersDataCache[partnerName].avatarUrl) {
@@ -893,7 +926,8 @@
                 title: place.title,
                 type: place.type || 'spot',
                 createdAt: place.createdAt,
-                comments: []
+                comments: [],
+                likes: place.likes || []
             }));
             const feedItems = [...localPlaces, ...posts].sort((a, b) => getFeedTimestamp(b) - getFeedTimestamp(a));
 
@@ -907,17 +941,24 @@
             container.innerHTML = feedItems.map(post => {
                 const userData = usersDataCache[post.author];
                 const avatarHTML = userData && userData.avatarUrl ? `<img src="${userData.avatarUrl}">` : (post.author ? post.author[0] : '?');
-                const badgeColorClass = post.author === 'Wasabi' ? 'badge-wasabi' : 'badge-lilgga';
+                let badgeColorClass = 'badge-lilgga';
+                if (post.author === 'Wasabi') badgeColorClass = 'badge-wasabi';
+                else if (post.author === 'La Flaca') badgeColorClass = 'badge-laflaca';
                 const isSpot = post.type === 'spot';
                 const spotTag = isSpot ? '<span class="spot-tag">Spot/Lugar</span>' : '';
                 const titleHtml = post.title ? `<div style="font-size:15px;color:#ffffff;margin-top:6px;">${escapeHtml(post.title)}</div>` : '';
                 const commentsHTML = (!isSpot && post.comments ? (post.comments || []).map(c => `
                     <div class="comment-item"><span class="author-${c.user === 'Wasabi' ? 'W' : 'L'}">${c.user}:</span>${c.text}</div>
                 `).join('') : '');
-                const actionHtml = isSpot ? `<div class="post-actions"><span class="view-text">Spot/Lugar</span></div>` : `
+                // Likes (one per user)
+                const likesCount = Array.isArray(post.likes) ? post.likes.length : 0;
+                const likedByMe = Array.isArray(post.likes) && currentUser && post.likes.includes(currentUser);
+                const likeIconName = likedByMe ? 'star' : 'star_border';
+                const likeHtml = `<span class="material-icons ${likedByMe ? 'view-icon seen' : 'view-icon'}" onclick="toggleLike('${post.id}')">${likeIconName}</span><span class="view-text">${likesCount > 0 ? likesCount + ' Me gusta' : 'Me gusta'}</span>`;
+
+                const actionHtml = isSpot ? `<div class="post-actions"><span class="view-text">Spot/Lugar</span>${likeHtml}</div>` : `
                         <div class="post-actions">
-                            <span class="material-icons ${post.seen ? 'view-icon seen' : 'view-icon'}" onclick="toggleSeen('${post.id}', ${post.seen})">visibility</span>
-                            <span class="view-text">${post.seen ? 'Visto' : 'Marcar visto'}</span>
+                            ${likeHtml}
                         </div>`;
                 const commentsSection = isSpot ? '' : `
                         <div class="comments-section">
@@ -949,6 +990,44 @@
 
         async function toggleSeen(id, currentStatus) {
             await db.collection("posts").doc(id).update({ seen: !currentStatus });
+        }
+
+        // Toggle like for a feed item. Local places stored in localStorage, posts stored in Firestore.
+        async function toggleLike(rawId) {
+            if (!currentUser) return alert('Selecciona un perfil antes de dar Me gusta.');
+            try {
+                // Try local places first
+                const local = loadLocalPlaces();
+                const localIndex = local.findIndex(p => `spot-${p.createdAt}-${p.owner}` === rawId);
+                if (localIndex !== -1) {
+                    const likes = local[localIndex].likes || [];
+                    if (likes.includes(currentUser)) {
+                        local[localIndex].likes = likes.filter(u => u !== currentUser);
+                    } else {
+                        local[localIndex].likes = [...likes, currentUser];
+                    }
+                    saveLocalPlaces(local);
+                    renderPlacesList(); renderProfilePlaces(); renderFeed(globalPosts);
+                    return;
+                }
+
+                // Otherwise, assume it's a post id in Firestore
+                const postRef = db.collection('posts').doc(rawId);
+                const postDoc = await postRef.get();
+                if (postDoc.exists) {
+                    const data = postDoc.data();
+                    const likes = data.likes || [];
+                    if (likes.includes(currentUser)) {
+                        await postRef.update({ likes: firebase.firestore.FieldValue.arrayRemove(currentUser) });
+                    } else {
+                        await postRef.update({ likes: firebase.firestore.FieldValue.arrayUnion(currentUser) });
+                    }
+                    return;
+                }
+            } catch (err) {
+                console.error('Error toggling like:', err);
+                alert('No se pudo actualizar Me gusta. Revisa la consola.');
+            }
         }
 
         async function addComment(id) {
@@ -985,7 +1064,9 @@
             
             container.innerHTML = msgs.map(msg => {
                 const isMe = msg.sender === currentUser;
-                let bubbleClass = msg.sender === 'Wasabi' ? 'wasabi-bubble' : 'lilgga-bubble';
+                let bubbleClass = 'lilgga-bubble';
+                if (msg.sender === 'Wasabi') bubbleClass = 'wasabi-bubble';
+                else if (msg.sender === 'La Flaca') bubbleClass = 'laflaca-bubble';
                 let alignStyle = isMe ? 'my-bubble-right' : '';
                  return `<div class="msg-bubble ${bubbleClass} ${alignStyle}">${msg.text}</div>`;
             }).join('');
@@ -1052,13 +1133,8 @@
                 avatarBg.style.background = '#121212';
             }
 
-            const friendButton = document.getElementById('btn-friend-action');
-            if(selectedProfileView === currentUser) {
-                const partner = currentUser === 'Wasabi' ? 'LiLGGA' : 'Wasabi';
-                friendButton.innerHTML = `<span class="material-icons" style="font-size:16px;">visibility</span> Ver perfil de ${partner}`;
-            } else {
-                friendButton.innerHTML = `<span class="material-icons" style="font-size:16px;">account_circle</span> Volver a mi perfil`;
-            }
+            // Render buttons to choose which profile to view
+            renderFriendButtons();
 
             const targetedPosts = globalPosts.filter(p => p.author === selectedProfileView);
             document.getElementById('post-count').innerText = targetedPosts.length;
@@ -1073,7 +1149,13 @@
         }
 
         function toggleViewedProfile() {
-            selectedProfileView = (selectedProfileView === currentUser) ? (currentUser === 'Wasabi' ? 'LiLGGA' : 'Wasabi') : currentUser;
+            const users = ['Wasabi', 'LiLGGA', 'La Flaca'];
+            if (selectedProfileView === currentUser) {
+                const currentIndex = users.indexOf(currentUser);
+                selectedProfileView = users[(currentIndex + 1) % users.length];
+            } else {
+                selectedProfileView = currentUser;
+            }
             renderProfileData();
         }
         // --- Places: simple form-based places manager ---
@@ -1141,6 +1223,22 @@
                 d.innerHTML = html;
                 if(p.img) { const img = document.createElement('img'); img.src = p.img; d.appendChild(img); }
                 container.appendChild(d);
+            });
+        }
+
+        function renderFriendButtons() {
+            const container = document.getElementById('btn-friend-actions');
+            if(!container) return;
+            container.innerHTML = '';
+            const users = ['Wasabi', 'LiLGGA', 'La Flaca'];
+            const others = users.filter(u => u !== selectedProfileView);
+            others.forEach(u => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-switch-friend';
+                btn.style.flex = '1';
+                btn.innerHTML = `<span class="material-icons" style="font-size:16px;">account_circle</span> Ver ${u}`;
+                btn.onclick = () => { selectedProfileView = u; renderProfileData(); };
+                container.appendChild(btn);
             });
         }
     </script>
