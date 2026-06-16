@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DuplApp - Premium Dark Edition</title>
+    <title>TravelGram - Premium Dark Edition</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         /* Places simple styles (form-based) */
@@ -346,11 +346,19 @@
             border-top: 1px solid #1e1e1e; display: flex; justify-content: space-around; align-items: center; background-color: #000000;
         }
         .nav-item { background: none; border: none; color: #555555; cursor: pointer; display: flex;
-            flex-direction: column; align-items: center; padding: 10px; transition: color 0.2s; }
+            flex-direction: column; align-items: center; padding: 10px; transition: color 0.2s; position: relative; }
         .nav-item.active { color: #ffffff;
         }
         .nav-item .material-icons { font-size: 26px;
         }
+        .nav-badge { position: absolute; top: 8px; right: 10px; width: 10px; height: 10px; border-radius: 50%; background: #ff3b30; display: none; }
+        .nav-badge.visible { display: block; }
+        .notification-item { padding: 12px 14px; border-bottom: 1px solid #1e1e1e; display:flex; flex-direction:column; gap:6px; }
+        .notification-item:last-child { border-bottom: none; }
+        .notification-item .notification-type { font-size: 11px; color: #ffffff; opacity: .7; }
+        .notification-item .notification-text { font-size: 14px; color: #ffffff; }
+        .notification-item .notification-time { font-size: 11px; color: #888888; }
+        .notification-item.notification-unread { background: rgba(255,255,255,0.05); }
 
         .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
             padding: 40px 20px; color: #666666; width:100%; }
@@ -365,7 +373,7 @@
     <div class="app-container">
         
         <div class="login-screen" id="login-screen">
-            <h1 class="login-title">DuplApp</h1>
+            <h1 class="login-title">TravelGram</h1>
             <p class="login-subtitle">Selecciona tu perfil de acceso</p>
             <div class="profile-selector-container">
                 <div class="user-card wasabi" onclick="selectUser('Wasabi')">
@@ -380,7 +388,7 @@
         </div>
 
         <header class="top-header">
-            <div class="logo">DuplApp</div>
+            <div class="logo">TravelGram</div>
             <div id="user-tag" class="current-user-tag" onclick="logout()">Cargando...</div>
          </header>
 
@@ -428,15 +436,8 @@
                  <div class="counter-container">
                     <div class="scoreboard">
                         <h3 style="margin-bottom: 20px;
-                            text-align: center; color: #888888; font-size:14px; text-transform:uppercase; letter-spacing:0.5px;">Petas Publicados 🍁</h3>
-                        <div class="score-row">
-                            <span class="score-user"><span class="material-icons" style="color:#ff4d52;">local_fire_department</span> Wasabi</span>
-                            <span class="score-number" id="score-wasabi">0</span>
-                         </div>
-                        <div class="score-row">
-                            <span class="score-user"><span class="material-icons" style="color:#4da6ff;">bolt</span> LiLGGA</span>
-                             <span class="score-number" id="score-lilgga">0</span>
-                        </div>
+                            text-align: center; color: #888888; font-size:14px; text-transform:uppercase; letter-spacing:0.5px;">🔔 Centro de notificaciones</h3>
+                        <div id="notifications-list"></div>
                     </div>
                 </div>
             </section>
@@ -478,7 +479,7 @@
                                 <span class="material-icons" style="font-size:12px;">place</span>
                                 <span id="profile-city-name">Ponte algo</span>
                              </div>
-                            <p id="profile-bio-text">Biografía sabrosona...</p>
+                            <p id="profile-bio-text">Biografía de viaje...</p>
                         </div>
                         <hr style="border:0;
                             border-top: 1px solid #1e1e1e; margin: 24px 0;">
@@ -527,19 +528,19 @@
                 <div style="display: flex;
                     flex-direction: column; gap: 6px;">
                     <label for="edit-city" style="font-size: 12px;
-                        color: #888888; font-weight: 600;">Bajo la sustancia de: </label>
+                        color: #888888; font-weight: 600;">📍 Próximo Destino / Ciudad Actual:</label>
                     <select id="edit-city">
                         <option value="">Ninguna seleccionada</option>
-                        <option value="Madrid">Gelato</option>
-                         <option value="Barcelona">Haze</option>
-                        <option value="París">StrawBerry</option>
-                        <option value="Londres">CBD</option>
-                        <option value="Nueva York">Xoko</option>
-                         <option value="Tokio">Dry</option>
-                        <option value="Roma">Polen</option>
-                        <option value="Ámsterdam">Ni Puta Idea</option>
-                        <option value="Berlín">Nada :(</option>
-                         <option value="Ibiza">Otro...</option>
+                        <option value="Madrid">Madrid</option>
+                         <option value="Barcelona">Barcelona</option>
+                        <option value="París">París</option>
+                        <option value="Londres">Londres</option>
+                        <option value="Nueva York">Nueva York</option>
+                         <option value="Tokio">Tokio</option>
+                        <option value="Roma">Roma</option>
+                        <option value="Ámsterdam">Ámsterdam</option>
+                        <option value="Berlín">Berlín</option>
+                         <option value="Ibiza">Ibiza</option>
                     </select>
                 </div>
 
@@ -550,7 +551,7 @@
                         margin-top:6px; color:#666666;">Cambiar foto de perfil</p>
                     <input type="file" id="edit-avatar-file" accept="image/*" onchange="updateFileStatus('edit-avatar-file', 'avatar-status')">
                 </div>
-                <textarea id="edit-bio" rows="3" placeholder="Tu estado o descripción..."></textarea>
+                <textarea id="edit-bio" rows="3" placeholder="Tu estado o descripción de viajero..."></textarea>
                 <div class="modal-buttons">
                      <button class="btn btn-secondary" onclick="closeModal('edit-profile-modal')">Cancelar</button>
                     <button class="btn btn-primary" onclick="saveProfileChanges()">Guardar Cambios</button>
@@ -560,7 +561,7 @@
 
         <nav class="bottom-nav">
             <button class="nav-item active" onclick="switchView('feed-view', this)"><span class="material-icons">home</span></button>
-            <button class="nav-item" onclick="switchView('counter-view', this)"><span class="material-icons">emoji_events</span></button>
+            <button class="nav-item" onclick="switchView('counter-view', this)"><span class="material-icons">notifications</span><span id="notifications-badge" class="nav-badge"></span></button>
             <button class="nav-item" onclick="switchView('chats-view', this)"><span class="material-icons">chat</span></button>
             <button class="nav-item" onclick="switchView('profile-view', this)"><span class="material-icons">account_circle</span></button>
             <button class="nav-item" onclick="switchView('places-view', this)"><span class="material-icons">place</span></button>
@@ -584,14 +585,88 @@
         let selectedProfileView = null;
         let usersDataCache = { Wasabi: null, LiLGGA: null };
         let globalPosts = [];
+        let notifications = [];
+        let notifiedPostIds = [];
+        let notifiedMessageIds = [];
+        let initialPostsLoaded = false;
+        let initialMessagesLoaded = false;
 
         window.addEventListener('DOMContentLoaded', () => {
+            notifications = loadNotifications();
+            notifiedPostIds = loadNotifiedIds('post');
+            notifiedMessageIds = loadNotifiedIds('message');
             listenUsers();
             listenPosts();
             listenMessages();
             checkLogin();
             renderPlacesList();
+            renderNotifications();
+            updateNotificationBadge();
         });
+
+        function loadNotifications() {
+            try { return JSON.parse(localStorage.getItem('duplapp_notifications') || '[]'); } catch (e) { return []; }
+        }
+
+        function saveNotifications() {
+            localStorage.setItem('duplapp_notifications', JSON.stringify(notifications));
+        }
+
+        function loadNotifiedIds(kind) {
+            try { return JSON.parse(localStorage.getItem(`duplapp_notified_${kind}_ids`) || '[]'); } catch (e) { return []; }
+        }
+
+        function saveNotifiedIds(kind, ids) {
+            localStorage.setItem(`duplapp_notified_${kind}_ids`, JSON.stringify(ids));
+        }
+
+        function addNotification(notification) {
+            if (!notification || !notification.id) return;
+            if (notifications.some(n => n.id === notification.id)) return;
+            notifications.unshift({ ...notification, read: false });
+            saveNotifications();
+            updateNotificationBadge();
+            renderNotifications();
+        }
+
+        function updateNotificationBadge() {
+            const badge = document.getElementById('notifications-badge');
+            if (!badge) return;
+            const unread = notifications.filter(n => !n.read).length;
+            badge.classList.toggle('visible', unread > 0);
+            badge.setAttribute('data-count', unread);
+        }
+
+        function renderNotifications() {
+            const container = document.getElementById('notifications-list');
+            if (!container) return;
+            if (notifications.length === 0) {
+                container.innerHTML = '<div class="notification-item"><div class="notification-text">No hay notificaciones recientes.</div></div>';
+                return;
+            }
+            container.innerHTML = notifications.map(n => {
+                const statusClass = n.read ? '' : 'notification-unread';
+                return `
+                    <div class="notification-item ${statusClass}">
+                        <div class="notification-type">${escapeHtml(n.type === 'message' ? 'Mensaje' : n.type === 'post' ? 'Foto' : 'Lugar')}</div>
+                        <div class="notification-text">${escapeHtml(n.text)}</div>
+                        <div class="notification-time">${formatNotificationTime(n.createdAt)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function formatNotificationTime(createdAt) {
+            const timestamp = typeof createdAt === 'number' ? createdAt : (createdAt && createdAt.toMillis ? createdAt.toMillis() : Date.now());
+            return new Date(timestamp).toLocaleString();
+        }
+
+        function markNotificationsRead() {
+            notifications = notifications.map(n => ({ ...n, read: true }));
+            saveNotifications();
+            updateNotificationBadge();
+            renderNotifications();
+        }
 
         function checkLogin() {
             const loginScreen = document.getElementById('login-screen');
@@ -674,13 +749,30 @@
         function listenPosts() {
             // Escuchamos ordenados por createdAt descendente (reciente a antiguo)
             db.collection("posts").orderBy("createdAt", "desc").onSnapshot((snapshot) => {
-                globalPosts = [];
+                const posts = [];
                 snapshot.forEach(doc => {
                     let post = doc.data();
                     post.id = doc.id;
-                    globalPosts.push(post);
+                    posts.push(post);
                 });
 
+                if (initialPostsLoaded) {
+                    posts.forEach(post => {
+                        if (post.author && !notifiedPostIds.includes(post.id)) {
+                            addNotification({
+                                id: `post-${post.id}`,
+                                type: 'post',
+                                text: `${post.author} subió una foto en ${post.location}`,
+                                createdAt: post.createdAt || Date.now()
+                            });
+                            notifiedPostIds.push(post.id);
+                        }
+                    });
+                    saveNotifiedIds('post', notifiedPostIds);
+                }
+
+                initialPostsLoaded = true;
+                globalPosts = posts;
                 renderFeed(globalPosts);
                 calculateScores(globalPosts);
                 renderProfileData();
@@ -692,12 +784,27 @@
         function listenMessages() {
             db.collection("messages").onSnapshot((snapshot) => {
                 let msgs = [];
-                snapshot.forEach(doc => msgs.push(doc.data()));
+                snapshot.forEach(doc => {
+                    const msg = doc.data();
+                    msg.id = doc.id;
+                    msgs.push(msg);
+                    if (initialMessagesLoaded && msg.sender && !notifiedMessageIds.includes(msg.id)) {
+                        addNotification({
+                            id: `message-${msg.id}`,
+                            type: 'message',
+                            text: `${msg.sender} envió un mensaje: ${msg.text}`,
+                            createdAt: msg.createdAt || Date.now()
+                        });
+                        notifiedMessageIds.push(msg.id);
+                    }
+                });
+                saveNotifiedIds('message', notifiedMessageIds);
                 msgs.sort((a, b) => {
                      let timeA = a.createdAt ? a.createdAt.toMillis() : Date.now();
                     let timeB = b.createdAt ? b.createdAt.toMillis() : Date.now();
                     return timeA - timeB;
                 });
+                initialMessagesLoaded = true;
                 renderChats(msgs);
              });
         }
@@ -721,11 +828,10 @@
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
             button.classList.add('active');
-            if(viewId === 'profile-view') { selectedProfileView = currentUser; renderProfileData();
-            }
-                if(viewId === 'chats-view') { setupChatInterface();
-                }
-                if(viewId === 'places-view') { renderPlacesList(); }
+            if(viewId === 'profile-view') { selectedProfileView = currentUser; renderProfileData(); }
+            if(viewId === 'chats-view') { setupChatInterface(); }
+            if(viewId === 'places-view') { renderPlacesList(); }
+            if(viewId === 'counter-view') { renderNotifications(); markNotificationsRead(); }
         }
 
         function setupChatInterface() {
@@ -959,7 +1065,7 @@
 
             const grid = document.getElementById('profile-grid');
             if(targetedPosts.length === 0){
-                grid.innerHTML = `<div class="empty-state"><span class="material-icons">landscape</span><p style="font-size:12px">Sin nada subido</p></div>`;
+                grid.innerHTML = `<div class="empty-state"><span class="material-icons">landscape</span><p style="font-size:12px">Sin viajes subidos</p></div>`;
             } else {
                 grid.innerHTML = targetedPosts.map(post => `<img src="${post.imgUrl}" class="grid-item">`).join('');
             }
@@ -991,6 +1097,12 @@
             const list = loadLocalPlaces(); list.push(place); saveLocalPlaces(list);
             document.getElementById('places-form').reset();
             renderPlacesList(); renderProfilePlaces();
+            addNotification({
+                id: `spot-${place.createdAt}-${place.owner}`,
+                type: 'spot',
+                text: `${place.owner} agregó un lugar: ${place.title || place.location}`,
+                createdAt: place.createdAt
+            });
             renderFeed(globalPosts);
             alert('Lugar guardado.');
         }
