@@ -3,8 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DuplApp - Premium Dark Edition</title>
+    <title>TravelGram - Premium Dark Edition</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* Places simple styles (form-based) */
+        .places-panel { padding: 12px; background:#000000; border:1px solid #1e1e1e; border-radius:8px }
+        .places-list .place { border-bottom:1px solid #1e1e1e; padding:8px 0 }
+        .places-list img { max-width:120px; display:block; margin-top:8px }
+        #places-form { display:flex; flex-direction:column; gap:8px; }
+        #places-form input[type="text"], #places-form textarea { padding:8px; background:#000; border:1px solid #1e1e1e; color:#fff; border-radius:6px }
+        #places-form .form-row { display:flex; gap:8px }
+        #places-form .form-row > * { flex:1 }
+    </style>
     
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -171,6 +181,7 @@
         }
         .post-location { font-size: 12px; color: #888888; margin-top: 2px;
         }
+        .spot-tag { display:inline-block; margin-left:6px; padding:2px 8px; background:#ffffff; color:#000000; border-radius: 999px; font-size:11px; font-weight:700; vertical-align:middle; }
         .post-img { width: 100%; max-height: 420px; object-fit: cover; display: block; background-color: #121212;
         }
         .post-actions { padding: 14px 14px 8px 14px; display: flex; align-items: center;
@@ -354,7 +365,7 @@
     <div class="app-container">
         
         <div class="login-screen" id="login-screen">
-            <h1 class="login-title">DuplApp</h1>
+            <h1 class="login-title">TravelGram</h1>
             <p class="login-subtitle">Selecciona tu perfil de acceso</p>
             <div class="profile-selector-container">
                 <div class="user-card wasabi" onclick="selectUser('Wasabi')">
@@ -369,7 +380,7 @@
         </div>
 
         <header class="top-header">
-            <div class="logo">DuplApp</div>
+            <div class="logo">TravelGram</div>
             <div id="user-tag" class="current-user-tag" onclick="logout()">Cargando...</div>
          </header>
 
@@ -382,6 +393,35 @@
                     </button>
                 </div>
                 <div id="feed-container"></div>
+            </section>
+
+            <section id="places-view" class="view">
+                <div style="padding:16px;">
+                    <div class="feed-header-actions"><span>Lugares</span>
+                        <div>
+                            <button class="btn btn-secondary" onclick="document.getElementById('place-location').focus()">Añadir lugar</button>
+                        </div>
+                    </div>
+                    <div style="margin-top:12px; display:flex; flex-direction:column; gap:12px;">
+                        <form id="places-form" onsubmit="handlePlacesFormSubmit(event)">
+                            <div class="form-row">
+                                <input id="place-location" type="text" placeholder="Lugar (ciudad, sitio)" required />
+                                <input id="place-title" type="text" placeholder="Título" />
+                            </div>
+                            <input id="place-photo" type="file" accept="image/*" />
+                            <textarea id="place-desc" rows="3" placeholder="Descripción"></textarea>
+                            <div style="display:flex; justify-content:flex-end; gap:8px">
+                                <button type="reset" class="btn btn-secondary">Limpiar</button>
+                                <button type="submit" class="btn btn-primary">Guardar lugar</button>
+                            </div>
+                        </form>
+
+                        <div class="places-panel">
+                            <strong>Lugares guardados</strong>
+                            <div class="places-list" id="places-list"></div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <section id="counter-view" class="view">
@@ -436,13 +476,18 @@
                             <h2 id="profile-name">Cargando...</h2>
                              <div id="profile-city-tag" class="city-tag" style="display:none;">
                                 <span class="material-icons" style="font-size:12px;">place</span>
-                                <span id="profile-city-name">Destino</span>
+                                <span id="profile-city-name">Ponte algo</span>
                              </div>
                             <p id="profile-bio-text">Biografía de viaje...</p>
                         </div>
                         <hr style="border:0;
                             border-top: 1px solid #1e1e1e; margin: 24px 0;">
                         <div class="travel-grid" id="profile-grid"></div>
+                        <hr style="border:0; border-top:1px solid #1e1e1e; margin:16px 0;">
+                        <div>
+                            <strong style="display:block; margin-bottom:8px;">Lugares</strong>
+                            <div id="profile-places" class="places-list"></div>
+                        </div>
                     </div>
 
                     <div class="switch-friend-profile-bar">
@@ -482,18 +527,19 @@
                 <div style="display: flex;
                     flex-direction: column; gap: 6px;">
                     <label for="edit-city" style="font-size: 12px;
-                        color: #888888; font-weight: 600;">Bajo la posesion de: </label>
+                        color: #888888; font-weight: 600;">📍 Próximo Destino / Ciudad Actual:</label>
                     <select id="edit-city">
                         <option value="">Ninguna seleccionada</option>
-                        <option value="Gelato">Gelato</option>
-                         <option value="Barcelona">Haze</option>
-                        <option value="París">blackberry</option>
-                        <option value="Londres">CBD</option>
-                        <option value="Nueva York">Dry</option>
-                        <option value="Berlín">Xoko</option>
-                         <option value="Tokio">Polen</option>
-                        <option value="Roma">Mi puta idea</option>
-                        <option value="Ámsterdam">Nada :(</option>
+                        <option value="Madrid">Madrid</option>
+                         <option value="Barcelona">Barcelona</option>
+                        <option value="París">París</option>
+                        <option value="Londres">Londres</option>
+                        <option value="Nueva York">Nueva York</option>
+                         <option value="Tokio">Tokio</option>
+                        <option value="Roma">Roma</option>
+                        <option value="Ámsterdam">Ámsterdam</option>
+                        <option value="Berlín">Berlín</option>
+                         <option value="Ibiza">Ibiza</option>
                     </select>
                 </div>
 
@@ -504,7 +550,7 @@
                         margin-top:6px; color:#666666;">Cambiar foto de perfil</p>
                     <input type="file" id="edit-avatar-file" accept="image/*" onchange="updateFileStatus('edit-avatar-file', 'avatar-status')">
                 </div>
-                <textarea id="edit-bio" rows="3" placeholder="Descripcion pa dejar esto mas wapo..."></textarea>
+                <textarea id="edit-bio" rows="3" placeholder="Tu estado o descripción de viajero..."></textarea>
                 <div class="modal-buttons">
                      <button class="btn btn-secondary" onclick="closeModal('edit-profile-modal')">Cancelar</button>
                     <button class="btn btn-primary" onclick="saveProfileChanges()">Guardar Cambios</button>
@@ -517,10 +563,11 @@
             <button class="nav-item" onclick="switchView('counter-view', this)"><span class="material-icons">emoji_events</span></button>
             <button class="nav-item" onclick="switchView('chats-view', this)"><span class="material-icons">chat</span></button>
             <button class="nav-item" onclick="switchView('profile-view', this)"><span class="material-icons">account_circle</span></button>
+            <button class="nav-item" onclick="switchView('places-view', this)"><span class="material-icons">place</span></button>
         </nav>
-    </div>
+        </div>
 
-    <script>
+        <script>
         // CONFIGURACIÓN DE TU BASE DE DATOS FIRESTORE
         const firebaseConfig = {
             apiKey: "AIzaSyA7E1ZFcZevRzl9FyM49qEQ158zLaN41Zg",
@@ -543,6 +590,7 @@
             listenPosts();
             listenMessages();
             checkLogin();
+            renderPlacesList();
         });
 
         function checkLogin() {
@@ -675,8 +723,9 @@
             button.classList.add('active');
             if(viewId === 'profile-view') { selectedProfileView = currentUser; renderProfileData();
             }
-            if(viewId === 'chats-view') { setupChatInterface();
-            }
+                if(viewId === 'chats-view') { setupChatInterface();
+                }
+                if(viewId === 'places-view') { renderPlacesList(); }
         }
 
         function setupChatInterface() {
@@ -719,25 +768,59 @@
             }
         }
 
+        function getFeedTimestamp(item) {
+            if (!item) return 0;
+            if (item.createdAt == null) return 0;
+            if (typeof item.createdAt === 'number') return item.createdAt;
+            if (item.createdAt.toMillis) return item.createdAt.toMillis();
+            return item.createdAt;
+        }
+
         function renderFeed(posts) {
             const container = document.getElementById('feed-container');
-            
-            // Forzamos la limpieza del contenedor antes de inyectar el nuevo estado (Evita duplicidades e hilos perdidos)
+            const localPlaces = loadLocalPlaces().map(place => ({
+                id: `spot-${place.createdAt}-${place.owner}`,
+                author: place.owner,
+                location: place.location,
+                imgUrl: place.img,
+                caption: place.desc,
+                title: place.title,
+                type: place.type || 'spot',
+                createdAt: place.createdAt,
+                comments: []
+            }));
+            const feedItems = [...localPlaces, ...posts].sort((a, b) => getFeedTimestamp(b) - getFeedTimestamp(a));
+
             container.innerHTML = "";
 
-            if (posts.length === 0) {
+            if (feedItems.length === 0) {
                 container.innerHTML = `<div class="empty-state"><span class="material-icons">photo_library</span><h3>No hay publicaciones</h3></div>`;
                 return;
             }
 
-            container.innerHTML = posts.map(post => {
+            container.innerHTML = feedItems.map(post => {
                 const userData = usersDataCache[post.author];
-                const avatarHTML = userData && userData.avatarUrl ? `<img src="${userData.avatarUrl}">` : post.author[0];
+                const avatarHTML = userData && userData.avatarUrl ? `<img src="${userData.avatarUrl}">` : (post.author ? post.author[0] : '?');
                 const badgeColorClass = post.author === 'Wasabi' ? 'badge-wasabi' : 'badge-lilgga';
-
-                const commentsHTML = (post.comments || []).map(c => `
+                const isSpot = post.type === 'spot';
+                const spotTag = isSpot ? '<span class="spot-tag">Spot/Lugar</span>' : '';
+                const titleHtml = post.title ? `<div style="font-size:15px;color:#ffffff;margin-top:6px;">${escapeHtml(post.title)}</div>` : '';
+                const commentsHTML = (!isSpot && post.comments ? (post.comments || []).map(c => `
                     <div class="comment-item"><span class="author-${c.user === 'Wasabi' ? 'W' : 'L'}">${c.user}:</span>${c.text}</div>
-                `).join('');
+                `).join('') : '');
+                const actionHtml = isSpot ? `<div class="post-actions"><span class="view-text">Spot/Lugar</span></div>` : `
+                        <div class="post-actions">
+                            <span class="material-icons ${post.seen ? 'view-icon seen' : 'view-icon'}" onclick="toggleSeen('${post.id}', ${post.seen})">visibility</span>
+                            <span class="view-text">${post.seen ? 'Visto' : 'Marcar visto'}</span>
+                        </div>`;
+                const commentsSection = isSpot ? '' : `
+                        <div class="comments-section">
+                            <div class="comments-list">${commentsHTML || '<span style="color:#555555; font-size:12px;">Sin comentarios</span>'}</div>
+                            <div class="comment-form">
+                                <input type="text" class="comment-input" id="input-comment-${post.id}" placeholder="Comentar...">
+                                <button class="btn-comment-send" onclick="addComment('${post.id}')">Enviar</button>
+                            </div>
+                        </div>`;
 
                 return `
                     <div class="post-card">
@@ -745,22 +828,14 @@
                             <div class="post-user-badge ${badgeColorClass}">${avatarHTML}</div>
                             <div>
                                  <div style="font-weight:bold; font-size:14px; color:#ffffff;">${userData?.name || post.author}</div>
-                                <div class="post-location">${post.location}</div>
+                                <div class="post-location">${escapeHtml(post.location || '')} ${spotTag}</div>
+                                ${titleHtml}
                             </div>
                         </div>
                          <img src="${post.imgUrl}" class="post-img">
-                        <div class="post-actions">
-                            <span class="material-icons ${post.seen ? 'view-icon seen' : 'view-icon'}" onclick="toggleSeen('${post.id}', ${post.seen})">visibility</span>
-                            <span class="view-text">${post.seen ? 'Visto' : 'Marcar visto'}</span>
-                        </div>
-                        <div class="post-info"><p><strong>${userData?.name || post.author}:</strong>${post.caption}</p></div>
-                         <div class="comments-section">
-                            <div class="comments-list">${commentsHTML || '<span style="color:#555555; font-size:12px;">Sin comentarios</span>'}</div>
-                            <div class="comment-form">
-                                <input type="text" class="comment-input" id="input-comment-${post.id}" placeholder="Comentar...">
-                                <button class="btn-comment-send" onclick="addComment('${post.id}')">Enviar</button>
-                            </div>
-                        </div>
+                        ${actionHtml}
+                        <div class="post-info"><p><strong>${userData?.name || post.author}:</strong> ${escapeHtml(post.caption || '')}</p></div>
+                        ${commentsSection}
                     </div>
                 `;
             }).join('');
@@ -888,11 +963,73 @@
             } else {
                 grid.innerHTML = targetedPosts.map(post => `<img src="${post.imgUrl}" class="grid-item">`).join('');
             }
+            renderProfilePlaces();
         }
 
         function toggleViewedProfile() {
             selectedProfileView = (selectedProfileView === currentUser) ? (currentUser === 'Wasabi' ? 'LiLGGA' : 'Wasabi') : currentUser;
             renderProfileData();
+        }
+        // --- Places: simple form-based places manager ---
+        const PLACES_KEY = 'duplapp_places_local_v1';
+
+        function loadLocalPlaces() { try { return JSON.parse(localStorage.getItem(PLACES_KEY) || '[]'); } catch (e) { return []; } }
+        function saveLocalPlaces(list) { localStorage.setItem(PLACES_KEY, JSON.stringify(list)); }
+
+        async function handlePlacesFormSubmit(ev) {
+            ev.preventDefault();
+            if(!currentUser) return alert('Selecciona un perfil antes de añadir lugares.');
+            const location = document.getElementById('place-location').value.trim();
+            const title = document.getElementById('place-title').value.trim();
+            const desc = document.getElementById('place-desc').value.trim();
+            const file = document.getElementById('place-photo').files[0];
+            let imgData = null;
+            if(file) {
+                try { imgData = await compressAndResizeImage(file, 800, 800, 0.7); } catch(e){ imgData = await readFileAsDataURL(file); }
+            }
+            const place = { location, title, desc, img: imgData, owner: currentUser, createdAt: Date.now(), type: 'spot' };
+            const list = loadLocalPlaces(); list.push(place); saveLocalPlaces(list);
+            document.getElementById('places-form').reset();
+            renderPlacesList(); renderProfilePlaces();
+            renderFeed(globalPosts);
+            alert('Lugar guardado.');
+        }
+
+        function readFileAsDataURL(file) { return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); }); }
+
+        function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return '&#'+c.charCodeAt(0)+';'; }); }
+
+        function renderPlacesList() {
+            const container = document.getElementById('places-list');
+            const list = loadLocalPlaces();
+            if(!container) return;
+            if(list.length === 0) { container.innerHTML = '<p class="small">No hay lugares guardados.</p>'; return; }
+            container.innerHTML = '';
+            list.forEach((p, idx) => {
+                const div = document.createElement('div'); div.className = 'place';
+                let html = `<strong>${escapeHtml(p.title || p.location)}</strong>`;
+                html += `<div class="small">${escapeHtml(p.location || '')} • ${new Date(p.createdAt).toLocaleString()}</div>`;
+                if(p.desc) html += `<div class="small">${escapeHtml(p.desc)}</div>`;
+                div.innerHTML = html;
+                if(p.img) { const img = document.createElement('img'); img.src = p.img; div.appendChild(img); }
+                container.appendChild(div);
+            });
+        }
+
+        function renderProfilePlaces() {
+            const container = document.getElementById('profile-places');
+            if(!container) return;
+            const list = loadLocalPlaces().filter(p => (p.owner || '') === (selectedProfileView || ''));
+            if(list.length === 0) { container.innerHTML = '<div class="small">Sin lugares para este usuario.</div>'; return; }
+            container.innerHTML = '';
+            list.forEach(p => {
+                const d = document.createElement('div'); d.className = 'place';
+                let html = `<strong>${escapeHtml(p.title || p.location)}</strong><div class="small">${escapeHtml(p.location || '')}</div>`;
+                if(p.desc) html += `<div class="small">${escapeHtml(p.desc)}</div>`;
+                d.innerHTML = html;
+                if(p.img) { const img = document.createElement('img'); img.src = p.img; d.appendChild(img); }
+                container.appendChild(d);
+            });
         }
     </script>
 </body>
