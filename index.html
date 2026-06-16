@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TravelGram - Premium Dark Edition</title>
+    <title>DuplApp - Premium Dark Edition</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         /* Places simple styles (form-based) */
@@ -365,7 +365,7 @@
     <div class="app-container">
         
         <div class="login-screen" id="login-screen">
-            <h1 class="login-title">TravelGram</h1>
+            <h1 class="login-title">DuplApp</h1>
             <p class="login-subtitle">Selecciona tu perfil de acceso</p>
             <div class="profile-selector-container">
                 <div class="user-card wasabi" onclick="selectUser('Wasabi')">
@@ -380,7 +380,7 @@
         </div>
 
         <header class="top-header">
-            <div class="logo">TravelGram</div>
+            <div class="logo">DuplApp</div>
             <div id="user-tag" class="current-user-tag" onclick="logout()">Cargando...</div>
          </header>
 
@@ -428,7 +428,7 @@
                  <div class="counter-container">
                     <div class="scoreboard">
                         <h3 style="margin-bottom: 20px;
-                            text-align: center; color: #888888; font-size:14px; text-transform:uppercase; letter-spacing:0.5px;">🏆 Viajes Publicados</h3>
+                            text-align: center; color: #888888; font-size:14px; text-transform:uppercase; letter-spacing:0.5px;">Petas Publicados 🍁</h3>
                         <div class="score-row">
                             <span class="score-user"><span class="material-icons" style="color:#ff4d52;">local_fire_department</span> Wasabi</span>
                             <span class="score-number" id="score-wasabi">0</span>
@@ -478,7 +478,7 @@
                                 <span class="material-icons" style="font-size:12px;">place</span>
                                 <span id="profile-city-name">Ponte algo</span>
                              </div>
-                            <p id="profile-bio-text">Biografía de viaje...</p>
+                            <p id="profile-bio-text">Biografía sabrosona...</p>
                         </div>
                         <hr style="border:0;
                             border-top: 1px solid #1e1e1e; margin: 24px 0;">
@@ -550,7 +550,7 @@
                         margin-top:6px; color:#666666;">Cambiar foto de perfil</p>
                     <input type="file" id="edit-avatar-file" accept="image/*" onchange="updateFileStatus('edit-avatar-file', 'avatar-status')">
                 </div>
-                <textarea id="edit-bio" rows="3" placeholder="Tu estado o descripción de viajero..."></textarea>
+                <textarea id="edit-bio" rows="3" placeholder="Tu estado o descripción..."></textarea>
                 <div class="modal-buttons">
                      <button class="btn btn-secondary" onclick="closeModal('edit-profile-modal')">Cancelar</button>
                     <button class="btn btn-primary" onclick="saveProfileChanges()">Guardar Cambios</button>
@@ -959,7 +959,7 @@
 
             const grid = document.getElementById('profile-grid');
             if(targetedPosts.length === 0){
-                grid.innerHTML = `<div class="empty-state"><span class="material-icons">landscape</span><p style="font-size:12px">Sin viajes subidos</p></div>`;
+                grid.innerHTML = `<div class="empty-state"><span class="material-icons">landscape</span><p style="font-size:12px">Sin nada subido</p></div>`;
             } else {
                 grid.innerHTML = targetedPosts.map(post => `<img src="${post.imgUrl}" class="grid-item">`).join('');
             }
